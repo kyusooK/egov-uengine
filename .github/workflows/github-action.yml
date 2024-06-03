@@ -1,5 +1,5 @@
 name: github-action
-run-name: ${{ github.actor }} is out building GitHub Actions
+run-name: ${{ github.actor }} is out building GitHub Actions 
 
 on:
   push:
