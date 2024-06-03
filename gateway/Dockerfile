@@ -1,6 +1,5 @@
-FROM eclipse-temurin:17-jdk-jammy
-COPY target/*.jar app.jar
+FROM openjdk:15-jdk-slim
+COPY target/*SNAPSHOT.jar /app/app.jar
 EXPOSE 8080
-ENV spring.profiles.active=docker
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
-ENTRYPOINT ["java", "-jar", "/app/app.jar"]
+ENV TZ=Asia/Seoul
+ENTRYPOINT ["java","-Xmx400M","-Djava.security.egd=file:/dev/./urandom","-jar","/app/app.jar"]
