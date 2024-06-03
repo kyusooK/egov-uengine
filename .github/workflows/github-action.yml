@@ -2,6 +2,10 @@ name: Build and Push Services
 
 on: [push]
 
+env:
+  DOCKERHUB_USERNAME: kimkyusoo
+  DOCKERHUB_PASSWORD: Rlarbtn135!
+
 jobs:
   build-accident:
     runs-on: ubuntu-latest
