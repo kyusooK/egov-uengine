@@ -63,7 +63,7 @@ public class Accident {
         this.setEmployeeId(applySickLeaveBenefitCommand.getEmployeeId());
         this.setPeriod(applySickLeaveBenefitCommand.getPeriod());
         this.setStatus("휴업급여신청됨");
-
+ 
         //Following code causes dependency to external APIs
         // it is NOT A GOOD PRACTICE. instead, Event-Policy mapping is recommended.
         industrialaccident.external.RequestSickLeaveBenefitCommand requestSickLeaveBenefitCommand = 
