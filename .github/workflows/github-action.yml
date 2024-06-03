@@ -84,19 +84,6 @@ jobs:
             ghcr.io/kyusook/egov-uengine/egov-default-backend:latest
             ghcr.io/kyusook/egov-uengine/egov-default-backend:${{ github.ref_name }}
 
-      - name: Build and push for egov-default-frontend
-        run: |
-          cd egov-default-frontend
-          npm run build
-        uses: docker/build-push-action@v4
-        with:
-          context: ./egov-default-frontend
-          platforms: linux/amd64,linux/arm64
-          push: true
-          tags: |
-            ghcr.io/kyusook/egov-uengine/egov-default-frontend:latest
-            ghcr.io/kyusook/egov-uengine/egov-default-frontend:${{ github.ref_name }}
-
       - name: Set up Kubernetes
         uses: azure/setup-kubectl@v1
         with:
