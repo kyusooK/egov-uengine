@@ -43,8 +43,8 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: |
-            ghcr.io/${{ github.repository }}/accident:latest
-            ghcr.io/${{ github.repository }}/accident:${{ github.ref_name }}
+            ghcr.io/kyusook/egov-uengine/accident:latest
+            ghcr.io/kyusook/egov-uengine/accident:${{ github.ref_name }}
             
       - name: Docker Build and push for Assessment
         uses: docker/build-push-action@v4
@@ -53,8 +53,8 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: |
-            ghcr.io/${{ github.repository }}/assessment:latest
-            ghcr.io/${{ github.repository }}/assessment:${{ github.ref_name }}
+            ghcr.io/kyusook/egov-uengine/assessment:latest
+            ghcr.io/kyusook/egov-uengine/assessment:${{ github.ref_name }}
             
       - name: Docker Build and push for Compensation
         uses: docker/build-push-action@v4
@@ -63,26 +63,5 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: |
-            ghcr.io/${{ github.repository }}/compensation:latest
-            ghcr.io/${{ github.repository }}/compensation:${{ github.ref_name }}
-            
-      - name: Docker Build and push for Statistics
-        uses: docker/build-push-action@v4
-        with:
-          context: ./statistics
-          platforms: linux/amd64,linux/arm64
-          push: true
-          tags: |
-            ghcr.io/${{ github.repository }}/statistics:latest
-            ghcr.io/${{ github.repository }}/statistics:${{ github.ref_name }}
-            
-      - name: Docker Build and push for Notification
-        uses: docker/build-push-action@v4
-        with:
-          context: ./notification
-          platforms: linux/amd64,linux/arm64
-          push: true
-          tags: |
-            ghcr.io/${{ github.repository }}/notification:latest
-            ghcr.io/${{ github.repository }}/notification:${{ github.ref_name }}
-            
+            ghcr.io/kyusook/egov-uengine/compensation:latest
+            ghcr.io/kyusook/egov-uengine/compensation:${{ github.ref_name }}
