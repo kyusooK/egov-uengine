@@ -56,13 +56,11 @@ function EgovNoticeEdit(props) {
             id: boardDetail.id,
             businessCode: boardDetail.businessCode,
             employeeId: boardDetail.employeeId,
-            name: boardDetail.name,
             hospitalCode: boardDetail.hospitalCode,
             period: boardDetail.period,
             doctorNote: boardDetail.doctorNote,
             accidentType: boardDetail.accidentType,
             status: boardDetail.status,
-            applyDt: boardDetail.applyDt
         };
 
         axios.post('/accidents', entity)
@@ -123,17 +121,7 @@ function EgovNoticeEdit(props) {
                         <div className="board_view2">
                             <dl>
                                 <dt>
-                                    <label htmlFor="nttSj">Id</label>
-                                </dt>
-                                <dd>
-                                    <input className="f_input2 w_full" id="id" name="id" type="text"
-                                        onChange={e => setBoardDetail({ ...boardDetail, id: e.target.value })}
-                                        maxLength="60" />
-                                </dd>
-                            </dl>
-                            <dl>
-                                <dt>
-                                    <label htmlFor="nttSj">BusinessCode</label>
+                                    <label htmlFor="nttSj">사업장코드</label>
                                 </dt>
                                 <dd>
                                     <input className="f_input2 w_full" id="businessCode" name="businessCode" type="text"
@@ -143,7 +131,7 @@ function EgovNoticeEdit(props) {
                             </dl>
                             <dl>
                                 <dt>
-                                    <label htmlFor="nttSj">EmployeeId</label>
+                                    <label htmlFor="nttSj">고용인ID</label>
                                 </dt>
                                 <dd>
                                     <input className="f_input2 w_full" id="employeeId" name="employeeId" type="text"
@@ -153,17 +141,7 @@ function EgovNoticeEdit(props) {
                             </dl>
                             <dl>
                                 <dt>
-                                    <label htmlFor="nttSj">Name</label>
-                                </dt>
-                                <dd>
-                                    <input className="f_input2 w_full" id="name" name="name" type="text"
-                                        onChange={e => setBoardDetail({ ...boardDetail, name: e.target.value })}
-                                        maxLength="60" />
-                                </dd>
-                            </dl>
-                            <dl>
-                                <dt>
-                                    <label htmlFor="nttSj">HospitalCode</label>
+                                    <label htmlFor="nttSj">병원코드</label>
                                 </dt>
                                 <dd>
                                     <input className="f_input2 w_full" id="hospitalCode" name="hospitalCode" type="text"
@@ -173,17 +151,7 @@ function EgovNoticeEdit(props) {
                             </dl>
                             <dl>
                                 <dt>
-                                    <label htmlFor="nttSj">Period</label>
-                                </dt>
-                                <dd>
-                                    <input className="f_input2 w_full" id="period" name="period" type="text"
-                                        onChange={e => setBoardDetail({ ...boardDetail, period: e.target.value })}
-                                        maxLength="60" />
-                                </dd>
-                            </dl>
-                            <dl>
-                                <dt>
-                                    <label htmlFor="nttSj">DoctorNote</label>
+                                    <label htmlFor="nttSj">의사소견서</label>
                                 </dt>
                                 <dd>
                                     <input className="f_input2 w_full" id="doctorNote" name="doctorNote" type="text"
@@ -193,31 +161,11 @@ function EgovNoticeEdit(props) {
                             </dl>
                             <dl>
                                 <dt>
-                                    <label htmlFor="nttSj">AccidentType</label>
+                                    <label htmlFor="nttSj">산재유형</label>
                                 </dt>
                                 <dd>
                                     <input className="f_input2 w_full" id="accidentType" name="accidentType" type="text"
                                         onChange={e => setBoardDetail({ ...boardDetail, accidentType: e.target.value })}
-                                        maxLength="60" />
-                                </dd>
-                            </dl>
-                            <dl>
-                                <dt>
-                                    <label htmlFor="nttSj">Status</label>
-                                </dt>
-                                <dd>
-                                    <input className="f_input2 w_full" id="status" name="status" type="text"
-                                        onChange={e => setBoardDetail({ ...boardDetail, status: e.target.value })}
-                                        maxLength="60" />
-                                </dd>
-                            </dl>
-                            <dl>
-                                <dt>
-                                    <label htmlFor="nttSj">ApplyDt</label>
-                                </dt>
-                                <dd>
-                                    <input className="f_input2 w_full" id="applyDt" name="applyDt" type="text"
-                                        onChange={e => setBoardDetail({ ...boardDetail, applyDt: e.target.value })}
                                         maxLength="60" />
                                 </dd>
                             </dl>

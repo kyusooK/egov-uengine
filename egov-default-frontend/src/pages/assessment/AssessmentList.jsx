@@ -1,4 +1,3 @@
-
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 
@@ -50,7 +49,7 @@ function EgovNoticeList(props) {
                                 id: resp[i].id,
                                 searchCondition: searchCondition}}                            
                             className="list_item">
-                            <div>{i}</div>
+                            <div>{resp[i].id}</div>
                             <div>{resp[i].accidentId}</div>
                             <div>{resp[i].businessCode}</div>
                             <div>{resp[i].employeeId}</div>
@@ -58,7 +57,6 @@ function EgovNoticeList(props) {
                             <div>{resp[i].hospitalCode}</div>
                             <div>{resp[i].doctorNote}</div>
                             <div>{resp[i].results}</div>
-                            <div>{resp[i].date}</div>
                             <div>{resp[i].comments}</div>
                        </Link>
                     );
@@ -87,7 +85,7 @@ function EgovNoticeList(props) {
                     <ul>
                         <li><Link to={URL.MAIN} className="home">Home</Link></li>
                         <li>산재심사</li>
-                        <li>진위확인</li>
+                        <li>요양급여</li>
                     </ul>
                 </div>
                 {/* <!--// Location --> */}
@@ -104,7 +102,7 @@ function EgovNoticeList(props) {
                             <h1 className="tit_1">산재심사</h1>
                         </div>
 
-                        <h2 className="tit_2">진위확인</h2>
+                        <h2 className="tit_2">요양급여</h2>
 
                         {/* <!-- 검색조건 --> */}
                         <div className="condition">
@@ -147,15 +145,14 @@ function EgovNoticeList(props) {
                             <div className="head">
 
                                 <span>Id</span>
-                                <span>AccidentId</span>
-                                <span>BusinessCode</span>
-                                <span>EmployeeId</span>
-                                <span>AssessorId</span>
-                                <span>HospitalCode</span>
-                                <span>DoctorNote</span>
-                                <span>Results</span>
-                                <span>Date</span>
-                                <span>Comments</span>
+                                <span>산재신청코드</span>
+                                <span>사업장코드</span>
+                                <span>고용인ID</span>
+                                <span>조사관ID</span>
+                                <span>병원코드</span>
+                                <span>의사 소견서</span>
+                                <span>진행결과</span>
+                                <span>의견</span>
                             
                             </div>
                             <div className="result">

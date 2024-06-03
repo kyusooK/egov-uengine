@@ -69,16 +69,9 @@ public class AssessmentServiceImpl
     public Assessment updateInvestigation(
         UpdateInvestigationCommand updateInvestigationCommand
     ) throws Exception {
-        // You can implement logic here, or call the domain method of the Assessment.
-
-        /** Option 1-1:  implement logic here     
-            Assessment assessment = new Assessment();
-            assessment.updateInvestigation(updateInvestigationCommand);
-            assessmentRepository.save(assessment);   
-        */
 
         Optional<Assessment> optionalAssessment = assessmentRepository.findById(
-            updateInvestigationCommand.getAssessmentId()
+            updateInvestigationCommand.getId()
         );
 
         if (optionalAssessment.isPresent()) {

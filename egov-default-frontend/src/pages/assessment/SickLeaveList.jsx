@@ -1,4 +1,3 @@
-
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 
@@ -45,12 +44,12 @@ function EgovNoticeList(props) {
                     if(resp.length == 0) mutListTag =[];
                     mutListTag.push(
                         <Link
-                            to={{pathname: "/sickLeave/SickLeaveDetail"}}
+                            to={{pathname: "/assessment/SickLeaveDetail"}}
                             state={{
                                 id: resp[i].id,
                                 searchCondition: searchCondition}}                            
                             className="list_item">
-                            <div>{i}</div>
+                            <div>{resp[i].id}</div>
                             <div>{resp[i].accessmentId}</div>
                             <div>{resp[i].accidentId}</div>
                             <div>{resp[i].businessCode}</div>
@@ -58,7 +57,6 @@ function EgovNoticeList(props) {
                             <div>{resp[i].averageSalary}</div>
                             <div>{resp[i].period}</div>
                             <div>{resp[i].status}</div>
-                            <div>{resp[i].date}</div>
                        </Link>
                     );
                 };
@@ -146,15 +144,13 @@ function EgovNoticeList(props) {
                             <div className="head">
 
                                 <span>Id</span>
-                                <span>AccessmentId</span>
-                                <span>AccidentId</span>
-                                <span>BusinessCode</span>
-                                <span>EmployeeId</span>
-                                <span>AverageSalary</span>
-                                <span>Period</span>
-                                <span>Status</span>
-                                <span>Date</span>
-                            
+                                <span>요양급여신청코드</span>
+                                <span>산재신청코드</span>
+                                <span>사업장코드</span>
+                                <span>고용인ID</span>
+                                <span>평균임금</span>
+                                <span>기간</span>
+                                <span>진행상태</span>
                             </div>
                             <div className="result">
                                 {listTag}

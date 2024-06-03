@@ -51,31 +51,34 @@ public class Assessment {
         return assessmentRepository;
     }
 
-    //<<< Clean Arch / Port Method
     public void createInvestigation(
         CreateInvestigationCommand createInvestigationCommand
-    ) {
-        //implement business logic here:
+    ) { 
+        this.setAccidentId(createInvestigationCommand.getAccidentId());
+        this.setBusinessCode(createInvestigationCommand.getBusinessCode());
+        this.setEmployeeId(createInvestigationCommand.getEmployeeId());
+        this.setHospitalCode(createInvestigationCommand.getHospitalCode());
+        this.setDoctorNote(createInvestigationCommand.getDoctorNote());
+        this.setComments(createInvestigationCommand.getAccidentType());
+        this.setResults("사실조사 생성됨");
 
-        InvestigationCreated investigationCreated = new InvestigationCreated(
-            this
-        );
+        InvestigationCreated investigationCreated = new InvestigationCreated(this);
         investigationCreated.publishAfterCommit();
     }
 
-    //>>> Clean Arch / Port Method
-    //<<< Clean Arch / Port Method
     public void updateInvestigation(
         UpdateInvestigationCommand updateInvestigationCommand
     ) {
         //implement business logic here:
+        this.setAssessorId(updateInvestigationCommand.getAssessorId());
+        this.setResults("사실조사 승인됨");
+        this.setComments(updateInvestigationCommand.getComments());
 
-        InvestigationApproved investigationApproved = new InvestigationApproved(
-            this
-        );
+        InvestigationApproved investigationApproved = new InvestigationApproved(this);
         investigationApproved.publishAfterCommit();
+
+        
     }
-    //>>> Clean Arch / Port Method
 
 }
 //>>> DDD / Aggregate Root

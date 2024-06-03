@@ -35,7 +35,9 @@ function EgovNoticeDetail(props) {
     const [updateInvestigationopen, setUpdateInvestigationOpen] = useState(false);
     const condition = true; 
 
-    const [entity, setEntity] = useState("");
+    const [key, setKey] = useState("");
+    const [assessorId, setAssessorId] = useState('');
+    const [comments, setComments] = useState('');
 
     const [masterBoard, setMasterBoard] = useState({});
     const [user, setUser] = useState({});
@@ -73,23 +75,11 @@ function EgovNoticeDetail(props) {
         axios.delete(`/assessments/${id}`)
         navigate('/assessment/assessments');
     }
-
-    function createInvestigation(){
-
-        axios.put(`/assessments/${id}/createinvestigation`, {id: entity }) 
-        .then(response => {
-            const resp = response.data
-            if(!resp){
-                navigate({pathname: URL.ERROR}, {state: {msg: resp.resultMessage}});
-            }else{
-                setCreateInvestigationOpen(false);
-                fetchAssessment(id);
-            }
-        });
-    }
+    
     function updateInvestigation(){
+        const data = { id:key, assessorId, comments };
 
-        axios.put(`/assessments/${id}/update`, {id: entity }) 
+        axios.put(`/assessments/${id}/update`, data) 
         .then(response => {
             const resp = response.data
             if(!resp){
@@ -109,7 +99,7 @@ function EgovNoticeDetail(props) {
                 <div className="location">
                     <ul>
                         <li><Link to={URL.MAIN} className="home">Home</Link></li>
-                        <li><Link to="/assessment/assessments">진위확인</Link></li>
+                        <li><Link to="/assessment/assessments">요양급여</Link></li>
                         <li>{masterBoard && masterBoard.bbsNm}</li>
                     </ul>
                 </div>
@@ -124,7 +114,7 @@ function EgovNoticeDetail(props) {
                         {/* <!-- 본문 --> */}
 
                         <div className="top_tit">
-                            <h1 className="tit_1">진위확인</h1>
+                            <h1 className="tit_1">요양급여</h1>
                         </div>
 
                         {/* <!-- 게시판 상세보기 --> */}
@@ -133,43 +123,39 @@ function EgovNoticeDetail(props) {
                                 <div className="tit">{id}</div>
                                 <div className="info">
                                     <dl>
-                                        <dt>진위확인</dt>
+                                        <dt>요양급여</dt>
                                         <dd>{id}</dd>
                                     </dl>
                                     <dl>
-                                        <dt>AccidentId</dt>
+                                        <dt>산재신청코드</dt>
                                         <dd>{boardDetail && boardDetail.accidentId }</dd>
                                     </dl>
                                     <dl>
-                                        <dt>BusinessCode</dt>
+                                        <dt>사업장코드</dt>
                                         <dd>{boardDetail && boardDetail.businessCode }</dd>
                                     </dl>
                                     <dl>
-                                        <dt>EmployeeId</dt>
+                                        <dt>고용인ID</dt>
                                         <dd>{boardDetail && boardDetail.employeeId }</dd>
                                     </dl>
                                     <dl>
-                                        <dt>AssessorId</dt>
+                                        <dt>조사관ID</dt>
                                         <dd>{boardDetail && boardDetail.assessorId }</dd>
                                     </dl>
                                     <dl>
-                                        <dt>HospitalCode</dt>
+                                        <dt>병원코드</dt>
                                         <dd>{boardDetail && boardDetail.hospitalCode }</dd>
                                     </dl>
                                     <dl>
-                                        <dt>DoctorNote</dt>
+                                        <dt>의사소견서</dt>
                                         <dd>{boardDetail && boardDetail.doctorNote }</dd>
                                     </dl>
                                     <dl>
-                                        <dt>Results</dt>
+                                        <dt>진행결과</dt>
                                         <dd>{boardDetail && boardDetail.results }</dd>
                                     </dl>
                                     <dl>
-                                        <dt>Date</dt>
-                                        <dd>{boardDetail && boardDetail.date }</dd>
-                                    </dl>
-                                    <dl>
-                                        <dt>Comments</dt>
+                                        <dt>의견</dt>
                                         <dd>{boardDetail && boardDetail.comments }</dd>
                                     </dl>
                                 </div>
@@ -177,15 +163,7 @@ function EgovNoticeDetail(props) {
                             <div className="board_btn_area">
                                 <div style={{ display: "flex", flexDirection: "row"}}>
                                     <div style={{marginTop: "5px"}}>
-                                        <button className="btn btn_blue_h46 w_100"
-                                         onClick={() => {
-                                            if (condition) {  
-                                            setCreateInvestigationOpen(true);
-                                            }
-                                        }}>
-                                            사실조사 생성
-                                        </button>
-                                        <button className="btn btn_blue_h46 w_100"
+                                        <button className="btn btn_blue_h46 w_140"
                                          onClick={() => {
                                             if (condition) {  
                                             setUpdateInvestigationOpen(true);
@@ -209,31 +187,6 @@ function EgovNoticeDetail(props) {
                         </div>
                         {/* <!-- 게시판 상세보기 --> */}
                         <div>
-                            <Dialog open={createInvestigationopen} onClose={() => setCreateInvestigationOpen(false)}>
-                                <DialogTitle>사실조사 생성</DialogTitle>
-                                <DialogContent>
-                                    <TextField 
-                                        autoFocus
-                                        margin="dense"
-                                        id=""
-                                        label=""
-                                        type="text"
-                                        fullWidth
-                                        value={entity}
-                                        onChange={(e) => setEntity(e.target.value)}
-                                    />
-                                </DialogContent>
-                                <DialogActions>
-                                    <button onClick={() => setCreateInvestigationOpen(false)} className="btn btn_blue_h46 w_100">
-                                        취소
-                                    </button>
-                                    <button onClick={createInvestigation} className="btn btn_blue_h46 w_100">
-                                    사실조사 생성
-                                    </button>
-                                </DialogActions>
-                            </Dialog>
-                        </div>
-                        <div>
                             <Dialog open={updateInvestigationopen} onClose={() => setUpdateInvestigationOpen(false)}>
                                 <DialogTitle>사실조사 판정</DialogTitle>
                                 <DialogContent>
@@ -244,8 +197,28 @@ function EgovNoticeDetail(props) {
                                         label="Id"
                                         type="text"
                                         fullWidth
-                                        value={entity}
-                                        onChange={(e) => setEntity(e.target.value)}
+                                        value={key}
+                                        onChange={(e) => setKey(e.target.value)}
+                                    />
+                                    <TextField 
+                                        autoFocus
+                                        margin="dense"
+                                        id="assessorId"
+                                        label="AssessorId"
+                                        type="text"
+                                        fullWidth
+                                        value={assessorId}
+                                        onChange={(e) => setAssessorId(e.target.value)}
+                                    />
+                                    <TextField 
+                                        autoFocus
+                                        margin="dense"
+                                        id="comments"
+                                        label="Comment"
+                                        type="text"
+                                        fullWidth
+                                        value={comments}
+                                        onChange={(e) => setComments(e.target.value)}
                                     />
                                 </DialogContent>
                                 <DialogActions>

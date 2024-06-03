@@ -30,24 +30,24 @@ public class PolicyHandler {
         value = KafkaProcessor.INPUT,
         condition = "headers['type']=='MedicalBenefitApplied'"
     )
-    public void wheneverMedicalBenefitApplied_Receipt(
-        @Payload MedicalBenefitApplied medicalBenefitApplied
-    ) {
+    public void wheneverMedicalBenefitApplied_Receipt(@Payload MedicalBenefitApplied medicalBenefitApplied) {
         MedicalBenefitApplied event = medicalBenefitApplied;
         System.out.println(
             "\n\n##### listener Receipt : " + medicalBenefitApplied + "\n\n"
         );
 
         CreateInvestigationCommand createInvestigationCommand = new CreateInvestigationCommand();
-        // implement:  Map command properties from event
-        // createInvestigationCommand.set??(event.get??());
+        createInvestigationCommand.setAccidentId(event.getId());
+        createInvestigationCommand.setBusinessCode(event.getBusinessCode());
+        createInvestigationCommand.setEmployeeId(event.getEmployeeId());
+        createInvestigationCommand.setHospitalCode(event.getHospitalCode());
+        createInvestigationCommand.setDoctorNote(event.getDoctorNote());
+        createInvestigationCommand.setAccidentType(event.getAccidentType());
 
-        // assessmentRepository.findById(
-        // implement: Set the Assessment Id from one of MedicalBenefitApplied event's corresponding property
+        Assessment assessment = new Assessment();
+        assessment.createInvestigation(createInvestigationCommand);
+        assessmentRepository.save(assessment);
 
-        // ).ifPresent(assessment->{
-        //  assessment.createInvestigation(createInvestigationCommand);
-        // });
 
     }
 
@@ -66,15 +66,14 @@ public class PolicyHandler {
         );
 
         CreateSickLeaveBenefitCommand createSickLeaveBenefitCommand = new CreateSickLeaveBenefitCommand();
-        // implement:  Map command properties from event
-        // createSickLeaveBenefitCommand.set??(event.get??());
+            createSickLeaveBenefitCommand.setAccessmentId(event.getId());
+            createSickLeaveBenefitCommand.setAccidentId(event.getAccidentId());
+            createSickLeaveBenefitCommand.setBusinessCode(event.getBusinessCode());
+            createSickLeaveBenefitCommand.setEmployeeId(event.getEmployeeId());
 
-        // sickLeaveRepository.findById(
-        // implement: Set the SickLeave Id from one of InvestigationApproved event's corresponding property
-
-        // ).ifPresent(sickLeave->{
-        //  sickLeave.createSickLeaveBenefit(createSickLeaveBenefitCommand);
-        // });
+            SickLeave sickLeave = new SickLeave();
+            sickLeave.createSickLeaveBenefit(createSickLeaveBenefitCommand);
+            sickLeaveRepository.save(sickLeave);
 
     }
 }

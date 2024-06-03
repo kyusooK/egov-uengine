@@ -1,4 +1,3 @@
-
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 
@@ -50,16 +49,14 @@ function EgovNoticeList(props) {
                                 id: resp[i].id,
                                 searchCondition: searchCondition}}                            
                             className="list_item">
-                            <div>{i}</div>
+                            <div>{resp[i].id}</div>
                             <div>{resp[i].businessCode}</div>
                             <div>{resp[i].employeeId}</div>
-                            <div>{resp[i].name}</div>
                             <div>{resp[i].hospitalCode}</div>
                             <div>{resp[i].period}</div>
                             <div>{resp[i].doctorNote}</div>
                             <div>{resp[i].accidentType}</div>
                             <div>{resp[i].status}</div>
-                            <div>{resp[i].applyDt}</div>
                        </Link>
                     );
                 };
@@ -147,16 +144,13 @@ function EgovNoticeList(props) {
                             <div className="head">
 
                                 <span>Id</span>
-                                <span>BusinessCode</span>
-                                <span>EmployeeId</span>
-                                <span>Name</span>
-                                <span>HospitalCode</span>
-                                <span>Period</span>
-                                <span>DoctorNote</span>
-                                <span>AccidentType</span>
-                                <span>Status</span>
-                                <span>ApplyDt</span>
-                            
+                                <span>사업장코드</span>
+                                <span>고용인ID</span>
+                                <span>병원코드</span>
+                                <span>기간</span>
+                                <span>의사 소견서</span>
+                                <span>산재유형</span>
+                                <span>상태</span>
                             </div>
                             <div className="result">
                                 {listTag}

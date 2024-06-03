@@ -13,7 +13,6 @@ import axios from 'axios';
 
 import * as EgovNet from 'api/egovFetch'
 import { NOTICE_BBS_ID } from 'config'
-import CODE from 'constants/code'
 import URL from 'constants/url'
 
 import EgovAttachFile from 'components/EgovAttachFile'
@@ -32,16 +31,16 @@ function EgovNoticeDetail(props) {
     const searchCondition = location.state.searchCondition;
 
     const [applySalaryopen, setApplySalaryOpen] = useState(false);
-    const [createSickLeaveBenefitopen, setCreateSickLeaveBenefitOpen] = useState(false);
     const [requestSickLeaveBenefitopen, setRequestSickLeaveBenefitOpen] = useState(false);
     const condition = true; 
 
     const [entity, setEntity] = useState("");
 
+    const [key, setKey] = useState('');
+    const [averageSalary, setAverageSalary] = useState('');
+
     const [masterBoard, setMasterBoard] = useState({});
-    const [user, setUser] = useState({});
     const [boardDetail, setBoardDetail] = useState({});
-    const [boardAttachFiles, setBoardAttachFiles] = useState();
 
     const retrieveDetail = () => {
         const retrieveDetailURL = `/sickLeaves/${id}`;
@@ -76,27 +75,14 @@ function EgovNoticeDetail(props) {
     }
 
     function applySalary(){
-
-        axios.put(`/sickLeaves/${id}/applysalary`, {id: entity }) 
+        const data = { id:key, averageSalary };
+        axios.put(`/sickLeaves/${id}/applysalary`, data) 
         .then(response => {
             const resp = response.data
             if(!resp){
                 navigate({pathname: URL.ERROR}, {state: {msg: resp.resultMessage}});
             }else{
                 setApplySalaryOpen(false);
-                fetchSickLeave(id);
-            }
-        });
-    }
-    function createSickLeaveBenefit(){
-
-        axios.put(`/sickLeaves/${id}/createsickleavebenefit`, {id: entity }) 
-        .then(response => {
-            const resp = response.data
-            if(!resp){
-                navigate({pathname: URL.ERROR}, {state: {msg: resp.resultMessage}});
-            }else{
-                setCreateSickLeaveBenefitOpen(false);
                 fetchSickLeave(id);
             }
         });
@@ -151,65 +137,45 @@ function EgovNoticeDetail(props) {
                                         <dd>{id}</dd>
                                     </dl>
                                     <dl>
-                                        <dt>AccessmentId</dt>
+                                        <dt>요양급여심사코드</dt>
                                         <dd>{boardDetail && boardDetail.accessmentId }</dd>
                                     </dl>
                                     <dl>
-                                        <dt>AccidentId</dt>
+                                        <dt>산재신청코드</dt>
                                         <dd>{boardDetail && boardDetail.accidentId }</dd>
                                     </dl>
                                     <dl>
-                                        <dt>BusinessCode</dt>
+                                        <dt>사업장코드</dt>
                                         <dd>{boardDetail && boardDetail.businessCode }</dd>
                                     </dl>
                                     <dl>
-                                        <dt>EmployeeId</dt>
+                                        <dt>고용인ID</dt>
                                         <dd>{boardDetail && boardDetail.employeeId }</dd>
                                     </dl>
                                     <dl>
-                                        <dt>AverageSalary</dt>
+                                        <dt>평균임금</dt>
                                         <dd>{boardDetail && boardDetail.averageSalary }</dd>
                                     </dl>
                                     <dl>
-                                        <dt>Period</dt>
+                                        <dt>기간</dt>
                                         <dd>{boardDetail && boardDetail.period }</dd>
                                     </dl>
                                     <dl>
-                                        <dt>Status</dt>
+                                        <dt>진행상태</dt>
                                         <dd>{boardDetail && boardDetail.status }</dd>
-                                    </dl>
-                                    <dl>
-                                        <dt>Date</dt>
-                                        <dd>{boardDetail && boardDetail.date }</dd>
                                     </dl>
                                 </div>
                             </div>
                             <div className="board_btn_area">
                                 <div style={{ display: "flex", flexDirection: "row"}}>
                                     <div style={{marginTop: "5px"}}>
-                                        <button className="btn btn_blue_h46 w_100"
+                                        <button className="btn btn_blue_h46 w_140"
                                          onClick={() => {
                                             if (condition) {  
                                             setApplySalaryOpen(true);
                                             }
                                         }}>
                                             평균임금 적용
-                                        </button>
-                                        <button className="btn btn_blue_h46 w_100"
-                                         onClick={() => {
-                                            if (condition) {  
-                                            setCreateSickLeaveBenefitOpen(true);
-                                            }
-                                        }}>
-                                            급여처리 생성
-                                        </button>
-                                        <button className="btn btn_blue_h46 w_100"
-                                         onClick={() => {
-                                            if (condition) {  
-                                            setRequestSickLeaveBenefitOpen(true);
-                                            }
-                                        }}>
-                                            휴업급여요청
                                         </button>
                                     </div>
                                 </div>
@@ -233,12 +199,22 @@ function EgovNoticeDetail(props) {
                                     <TextField 
                                         autoFocus
                                         margin="dense"
-                                        id=""
-                                        label=""
+                                        id="id"
+                                        label="Id"
                                         type="text"
                                         fullWidth
-                                        value={entity}
-                                        onChange={(e) => setEntity(e.target.value)}
+                                        value={key}
+                                        onChange={(e) => setKey(e.target.value)}
+                                    />
+                                    <TextField 
+                                        autoFocus
+                                        margin="dense"
+                                        id="averageSalary"
+                                        label="AverageSalary"
+                                        type="text"
+                                        fullWidth
+                                        value={averageSalary}
+                                        onChange={(e) => setAverageSalary(e.target.value)}
                                     />
                                 </DialogContent>
                                 <DialogActions>
@@ -252,54 +228,6 @@ function EgovNoticeDetail(props) {
                             </Dialog>
                         </div>
                         <div>
-                            <Dialog open={createSickLeaveBenefitopen} onClose={() => setCreateSickLeaveBenefitOpen(false)}>
-                                <DialogTitle>급여처리 생성</DialogTitle>
-                                <DialogContent>
-                                    <TextField 
-                                        autoFocus
-                                        margin="dense"
-                                        id=""
-                                        label=""
-                                        type="text"
-                                        fullWidth
-                                        value={entity}
-                                        onChange={(e) => setEntity(e.target.value)}
-                                    />
-                                </DialogContent>
-                                <DialogActions>
-                                    <button onClick={() => setCreateSickLeaveBenefitOpen(false)} className="btn btn_blue_h46 w_100">
-                                        취소
-                                    </button>
-                                    <button onClick={createSickLeaveBenefit} className="btn btn_blue_h46 w_100">
-                                    급여처리 생성
-                                    </button>
-                                </DialogActions>
-                            </Dialog>
-                        </div>
-                        <div>
-                            <Dialog open={requestSickLeaveBenefitopen} onClose={() => setRequestSickLeaveBenefitOpen(false)}>
-                                <DialogTitle>휴업급여요청</DialogTitle>
-                                <DialogContent>
-                                    <TextField 
-                                        autoFocus
-                                        margin="dense"
-                                        id="id"
-                                        label="Id"
-                                        type="text"
-                                        fullWidth
-                                        value={entity}
-                                        onChange={(e) => setEntity(e.target.value)}
-                                    />
-                                </DialogContent>
-                                <DialogActions>
-                                    <button onClick={() => setRequestSickLeaveBenefitOpen(false)} className="btn btn_blue_h46 w_100">
-                                        취소
-                                    </button>
-                                    <button onClick={requestSickLeaveBenefit} className="btn btn_blue_h46 w_100">
-                                    휴업급여요청
-                                    </button>
-                                </DialogActions>
-                            </Dialog>
                         </div>
                         
                         {/* <!--// 본문 --> */}

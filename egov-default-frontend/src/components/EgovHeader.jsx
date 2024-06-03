@@ -15,8 +15,8 @@ function EgovHeader() {
     const sessionUserSe = sessionUser?.userSe;
 
     const navigate = useNavigate();
-
     const logInHandler = () => { // 로그인 정보 없을 시
+        
         navigate(URL.LOGIN);
 		// PC와 Mobile 열린메뉴 닫기
 		document.querySelector('.all_menu.WEB').classList.add('closed');
@@ -70,23 +70,16 @@ function EgovHeader() {
 
                         <li><NavLink to={URL.ABOUT} className={({ isActive }) => (isActive ? "cur" : "")}>사이트소개</NavLink></li>
 
-                    <li><NavLink to="/accident/accidents" className={({ isActive }) => (isActive ? "cur" : "")}>산재접수</NavLink></li>
+                        <li><NavLink to="/accident/accidents" className={({ isActive }) => (isActive ? "cur" : "")}>산재접수</NavLink></li>
 
 
-                    <li><NavLink to="/assessment/assessments" className={({ isActive }) => (isActive ? "cur" : "")}>진위확인</NavLink></li>
+                        <li>{(<NavLink to="/assessment/assessments" className={({ isActive }) => (isActive ? "cur" : "")}>요양급여</NavLink>)}</li>
 
-                    <li><NavLink to="/assessment/sickLeaves" className={({ isActive }) => (isActive ? "cur" : "")}>휴업급여</NavLink></li>
-
-
-                    <li><NavLink to="/compensation/compensations" className={({ isActive }) => (isActive ? "cur" : "")}>보상지급</NavLink></li>
+                        <li>{(<NavLink to="/assessment/sickLeaves" className={({ isActive }) => (isActive ? "cur" : "")}>휴업급여</NavLink>)}</li>
 
 
-                    <li><NavLink to="/statistics/statistics" className={({ isActive }) => (isActive ? "cur" : "")}>Statistics</NavLink></li>
+                        <li><NavLink to="/compensation/compensations" className={({ isActive }) => (isActive ? "cur" : "")}>보상지급</NavLink></li>
 
-
-                    <li><NavLink to="/notification/notifications" className={({ isActive }) => (isActive ? "cur" : "")}>Notification</NavLink></li>
-
-                        <li><NavLink to={URL.INFORM} className={({ isActive }) => (isActive ? "cur" : "")}>알림마당</NavLink></li>
                         {sessionUserSe ==='USR' &&
                             <li><NavLink to={URL.ADMIN} className={({ isActive }) => (isActive ? "cur" : "")}>사이트관리</NavLink></li>
                         }

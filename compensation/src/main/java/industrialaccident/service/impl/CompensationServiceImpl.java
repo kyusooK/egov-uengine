@@ -76,20 +76,26 @@ public class CompensationServiceImpl
 
         /** Option 1-1:  implement logic here     
             Compensation compensation = new Compensation();
-            compensation.processCompensation(processCompensationCommand);
+            compensation.setUserId(event.getUserId());
+
             compensationRepository.save(compensation);   
         */
 
-        Optional<Compensation> optionalCompensation = compensationRepository.findById(
-            processCompensationCommand.getCompensationId()
-        );
+        // Optional<Compensation> optionalCompensation = compensationRepository.findById(
+        //     processCompensationCommand.getCompensationId()
+        // );
 
-        if (optionalCompensation.isPresent()) {
-            Compensation compensation = optionalCompensation.get();
-            compensation.processCompensation(processCompensationCommand);
-            return compensationRepository.save(compensation);
-        } else {
-            throw processException("info.nodata.msg");
-        }
+        // if (optionalCompensation.isPresent()) {
+        //     Compensation compensation = optionalCompensation.get();
+
+        //     // business Logic....
+        //     compensation.processCompensation(processCompensationCommand);
+        //     compensationRepository.save(compensation);
+
+        //     return compensation;
+        // } else {
+        //     throw processException("info.nodata.msg");
+        // }
+        return null;
     }
 }
