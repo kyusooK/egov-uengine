@@ -158,3 +158,43 @@ jobs:
           tags: |
             ghcr.io/kyusook/egov-uengine/egov-default-backend:latest
             ghcr.io/kyusook/egov-uengine/egov-default-backend:${{ github.ref_name }}
+
+  build-egov-default-frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ env.DOCKERHUB_USERNAME }}
+          password: ${{ env.DOCKERHUB_PASSWORD }}
+      
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Build Maven Project for egov-default-frontend
+        run:
+            cd egov-default-frontend
+            npm run build
+
+      - name: Docker Build and push for egov-default-frontend
+        uses: docker/build-push-action@v4
+        with:
+          context: ./egov-default-frontend
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: |
+            ghcr.io/kyusook/egov-uengine/egov-default-frontend:latest
+            ghcr.io/kyusook/egov-uengine/egov-default-frontend:${{ github.ref_name }}
