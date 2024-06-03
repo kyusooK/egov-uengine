@@ -1,0 +1,552 @@
+apiVersion: "networking.istio.io/v1alpha3"
+kind: "Gateway"
+metadata: 
+  name: industrialaccident
+spec: 
+  selector: 
+    istio: "ingressgateway"
+  servers: 
+    - 
+      port: 
+        number: 80
+        name: "http"
+        protocol: "HTTP"
+      hosts: 
+        - "*"
+
+
+---
+
+
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: rollout-accident
+spec:
+  replicas: 5
+  strategy:
+    canary:
+      trafficRouting:
+        istio:
+          virtualService: 
+            name: vsvc-accident        # required
+            routes:
+            - primary                 # required
+          destinationRule:
+            name: destrule-accident    # required
+            canarySubsetName: canary  # required
+            stableSubsetName: stable  # required
+      steps:
+      - setWeight: 5
+      - pause:
+          duration: 10s
+      - setWeight: 20
+      - pause:
+          duration: 10s
+      - setWeight: 40
+      - pause:
+          duration: 10s
+      - setWeight: 60
+      - pause:
+          duration: 10s
+      - setWeight: 80
+      - pause:
+          duration: 10s
+
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: accident
+  template:
+    metadata:
+      labels:
+        app: accident
+    spec:
+      containers:
+      - name: accident
+        image: "userid/accident:version"
+        ports:
+        - name: http
+          containerPort: 80
+          protocol: TCP
+        resources:
+          requests:
+            memory: 32Mi
+            cpu: 5m
+
+---
+ 
+
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: vsvc-accident
+spec:
+  gateways:
+  - industrialaccident
+  hosts:
+  - "*"
+  http:
+  - name: primary       # referenced in canary.trafficRouting.istio.virtualService.routes
+    match: 
+    - uri: 
+        exact: "/accidents"
+    rewrite:
+      uri: "/"
+    route:
+    - destination:
+        host: accident
+        subset: stable  # referenced in canary.trafficRouting.istio.destinationRule.stableSubsetName
+      weight: 100
+    - destination:
+        host: accident
+        subset: canary  # referenced in canary.trafficRouting.istio.destinationRule.canarySubsetName
+      weight: 0
+
+
+---
+
+
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: destrule-accident
+spec:
+  host: accident
+  subsets:
+  - name: canary   # referenced in canary.trafficRouting.istio.destinationRule.canarySubsetName
+    labels:        # labels will be injected with canary rollouts-pod-template-hash value
+      app: accident
+  - name: stable   # referenced in canary.trafficRouting.istio.destinationRule.stableSubsetName
+    labels:        # labels will be injected with canary rollouts-pod-template-hash value
+      app: accident
+
+
+---
+
+
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: rollout-assessment
+spec:
+  replicas: 5
+  strategy:
+    canary:
+      trafficRouting:
+        istio:
+          virtualService: 
+            name: vsvc-assessment        # required
+            routes:
+            - primary                 # required
+          destinationRule:
+            name: destrule-assessment    # required
+            canarySubsetName: canary  # required
+            stableSubsetName: stable  # required
+      steps:
+      - setWeight: 5
+      - pause:
+          duration: 10s
+      - setWeight: 20
+      - pause:
+          duration: 10s
+      - setWeight: 40
+      - pause:
+          duration: 10s
+      - setWeight: 60
+      - pause:
+          duration: 10s
+      - setWeight: 80
+      - pause:
+          duration: 10s
+
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: assessment
+  template:
+    metadata:
+      labels:
+        app: assessment
+    spec:
+      containers:
+      - name: assessment
+        image: "userid/assessment:version"
+        ports:
+        - name: http
+          containerPort: 80
+          protocol: TCP
+        resources:
+          requests:
+            memory: 32Mi
+            cpu: 5m
+
+---
+ 
+
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: vsvc-assessment
+spec:
+  gateways:
+  - industrialaccident
+  hosts:
+  - "*"
+  http:
+  - name: primary       # referenced in canary.trafficRouting.istio.virtualService.routes
+    match: 
+    - uri: 
+        exact: "/assessments"
+    rewrite:
+      uri: "/"
+    route:
+    - destination:
+        host: assessment
+        subset: stable  # referenced in canary.trafficRouting.istio.destinationRule.stableSubsetName
+      weight: 100
+    - destination:
+        host: assessment
+        subset: canary  # referenced in canary.trafficRouting.istio.destinationRule.canarySubsetName
+      weight: 0
+
+
+---
+
+
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: destrule-assessment
+spec:
+  host: assessment
+  subsets:
+  - name: canary   # referenced in canary.trafficRouting.istio.destinationRule.canarySubsetName
+    labels:        # labels will be injected with canary rollouts-pod-template-hash value
+      app: assessment
+  - name: stable   # referenced in canary.trafficRouting.istio.destinationRule.stableSubsetName
+    labels:        # labels will be injected with canary rollouts-pod-template-hash value
+      app: assessment
+
+
+---
+
+
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: rollout-compensation
+spec:
+  replicas: 5
+  strategy:
+    canary:
+      trafficRouting:
+        istio:
+          virtualService: 
+            name: vsvc-compensation        # required
+            routes:
+            - primary                 # required
+          destinationRule:
+            name: destrule-compensation    # required
+            canarySubsetName: canary  # required
+            stableSubsetName: stable  # required
+      steps:
+      - setWeight: 5
+      - pause:
+          duration: 10s
+      - setWeight: 20
+      - pause:
+          duration: 10s
+      - setWeight: 40
+      - pause:
+          duration: 10s
+      - setWeight: 60
+      - pause:
+          duration: 10s
+      - setWeight: 80
+      - pause:
+          duration: 10s
+
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: compensation
+  template:
+    metadata:
+      labels:
+        app: compensation
+    spec:
+      containers:
+      - name: compensation
+        image: "userid/compensation:version"
+        ports:
+        - name: http
+          containerPort: 80
+          protocol: TCP
+        resources:
+          requests:
+            memory: 32Mi
+            cpu: 5m
+
+---
+ 
+
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: vsvc-compensation
+spec:
+  gateways:
+  - industrialaccident
+  hosts:
+  - "*"
+  http:
+  - name: primary       # referenced in canary.trafficRouting.istio.virtualService.routes
+    match: 
+    - uri: 
+        exact: "/compensations"
+    rewrite:
+      uri: "/"
+    route:
+    - destination:
+        host: compensation
+        subset: stable  # referenced in canary.trafficRouting.istio.destinationRule.stableSubsetName
+      weight: 100
+    - destination:
+        host: compensation
+        subset: canary  # referenced in canary.trafficRouting.istio.destinationRule.canarySubsetName
+      weight: 0
+
+
+---
+
+
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: destrule-compensation
+spec:
+  host: compensation
+  subsets:
+  - name: canary   # referenced in canary.trafficRouting.istio.destinationRule.canarySubsetName
+    labels:        # labels will be injected with canary rollouts-pod-template-hash value
+      app: compensation
+  - name: stable   # referenced in canary.trafficRouting.istio.destinationRule.stableSubsetName
+    labels:        # labels will be injected with canary rollouts-pod-template-hash value
+      app: compensation
+
+
+---
+
+
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: rollout-statistics
+spec:
+  replicas: 5
+  strategy:
+    canary:
+      trafficRouting:
+        istio:
+          virtualService: 
+            name: vsvc-statistics        # required
+            routes:
+            - primary                 # required
+          destinationRule:
+            name: destrule-statistics    # required
+            canarySubsetName: canary  # required
+            stableSubsetName: stable  # required
+      steps:
+      - setWeight: 5
+      - pause:
+          duration: 10s
+      - setWeight: 20
+      - pause:
+          duration: 10s
+      - setWeight: 40
+      - pause:
+          duration: 10s
+      - setWeight: 60
+      - pause:
+          duration: 10s
+      - setWeight: 80
+      - pause:
+          duration: 10s
+
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: statistics
+  template:
+    metadata:
+      labels:
+        app: statistics
+    spec:
+      containers:
+      - name: statistics
+        image: "userid/statistics:version"
+        ports:
+        - name: http
+          containerPort: 80
+          protocol: TCP
+        resources:
+          requests:
+            memory: 32Mi
+            cpu: 5m
+
+---
+ 
+
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: vsvc-statistics
+spec:
+  gateways:
+  - industrialaccident
+  hosts:
+  - "*"
+  http:
+  - name: primary       # referenced in canary.trafficRouting.istio.virtualService.routes
+    match: 
+    - uri: 
+        exact: "/statistics"
+    rewrite:
+      uri: "/"
+    route:
+    - destination:
+        host: statistics
+        subset: stable  # referenced in canary.trafficRouting.istio.destinationRule.stableSubsetName
+      weight: 100
+    - destination:
+        host: statistics
+        subset: canary  # referenced in canary.trafficRouting.istio.destinationRule.canarySubsetName
+      weight: 0
+
+
+---
+
+
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: destrule-statistics
+spec:
+  host: statistics
+  subsets:
+  - name: canary   # referenced in canary.trafficRouting.istio.destinationRule.canarySubsetName
+    labels:        # labels will be injected with canary rollouts-pod-template-hash value
+      app: statistics
+  - name: stable   # referenced in canary.trafficRouting.istio.destinationRule.stableSubsetName
+    labels:        # labels will be injected with canary rollouts-pod-template-hash value
+      app: statistics
+
+
+---
+
+
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: rollout-notification
+spec:
+  replicas: 5
+  strategy:
+    canary:
+      trafficRouting:
+        istio:
+          virtualService: 
+            name: vsvc-notification        # required
+            routes:
+            - primary                 # required
+          destinationRule:
+            name: destrule-notification    # required
+            canarySubsetName: canary  # required
+            stableSubsetName: stable  # required
+      steps:
+      - setWeight: 5
+      - pause:
+          duration: 10s
+      - setWeight: 20
+      - pause:
+          duration: 10s
+      - setWeight: 40
+      - pause:
+          duration: 10s
+      - setWeight: 60
+      - pause:
+          duration: 10s
+      - setWeight: 80
+      - pause:
+          duration: 10s
+
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: notification
+  template:
+    metadata:
+      labels:
+        app: notification
+    spec:
+      containers:
+      - name: notification
+        image: "userid/notification:version"
+        ports:
+        - name: http
+          containerPort: 80
+          protocol: TCP
+        resources:
+          requests:
+            memory: 32Mi
+            cpu: 5m
+
+---
+ 
+
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: vsvc-notification
+spec:
+  gateways:
+  - industrialaccident
+  hosts:
+  - "*"
+  http:
+  - name: primary       # referenced in canary.trafficRouting.istio.virtualService.routes
+    match: 
+    - uri: 
+        exact: "/notifications"
+    rewrite:
+      uri: "/"
+    route:
+    - destination:
+        host: notification
+        subset: stable  # referenced in canary.trafficRouting.istio.destinationRule.stableSubsetName
+      weight: 100
+    - destination:
+        host: notification
+        subset: canary  # referenced in canary.trafficRouting.istio.destinationRule.canarySubsetName
+      weight: 0
+
+
+---
+
+
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: destrule-notification
+spec:
+  host: notification
+  subsets:
+  - name: canary   # referenced in canary.trafficRouting.istio.destinationRule.canarySubsetName
+    labels:        # labels will be injected with canary rollouts-pod-template-hash value
+      app: notification
+  - name: stable   # referenced in canary.trafficRouting.istio.destinationRule.stableSubsetName
+    labels:        # labels will be injected with canary rollouts-pod-template-hash value
+      app: notification
+
+

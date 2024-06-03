@@ -1,4 +1,4 @@
-name: Build and Push Services
+name: Build, Push, and Deploy Services
 
 on: [push]
 
@@ -7,7 +7,7 @@ env:
   DOCKERHUB_PASSWORD: Rlarbtn135!
 
 jobs:
-  build-accident:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -18,20 +18,20 @@ jobs:
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
-      
+
       - name: Login to Docker Hub
         uses: docker/login-action@v1
         with:
           username: ${{ env.DOCKERHUB_USERNAME }}
           password: ${{ env.DOCKERHUB_PASSWORD }}
-      
+
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v2
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      
+
       - name: Build Maven Project for Accident
         run: mvn clean package -f ./accident/pom.xml
 
@@ -45,31 +45,6 @@ jobs:
             ghcr.io/kyusook/egov-uengine/accident:latest
             ghcr.io/kyusook/egov-uengine/accident:${{ github.ref_name }}
 
-  build-assessment:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-      
-      - name: Login to Docker Hub
-        uses: docker/login-action@v1
-        with:
-          username: ${{ env.DOCKERHUB_USERNAME }}
-          password: ${{ env.DOCKERHUB_PASSWORD }}
-      
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v2
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      
       - name: Build Maven Project for Assessment
         run: mvn clean package -f ./assessment/pom.xml
 
@@ -83,31 +58,6 @@ jobs:
             ghcr.io/kyusook/egov-uengine/assessment:latest
             ghcr.io/kyusook/egov-uengine/assessment:${{ github.ref_name }}
 
-  build-compensation:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-      
-      - name: Login to Docker Hub
-        uses: docker/login-action@v1
-        with:
-          username: ${{ env.DOCKERHUB_USERNAME }}
-          password: ${{ env.DOCKERHUB_PASSWORD }}
-      
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v2
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      
       - name: Build Maven Project for Compensation
         run: mvn clean package -f ./compensation/pom.xml
 
@@ -121,31 +71,6 @@ jobs:
             ghcr.io/kyusook/egov-uengine/compensation:latest
             ghcr.io/kyusook/egov-uengine/compensation:${{ github.ref_name }}
 
-  build-egov-default-backend:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-      
-      - name: Login to Docker Hub
-        uses: docker/login-action@v1
-        with:
-          username: ${{ env.DOCKERHUB_USERNAME }}
-          password: ${{ env.DOCKERHUB_PASSWORD }}
-      
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v2
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      
       - name: Build Maven Project for egov-default-backend
         run: mvn clean package -f ./egov-default-backend/pom.xml
 
@@ -159,37 +84,10 @@ jobs:
             ghcr.io/kyusook/egov-uengine/egov-default-backend:latest
             ghcr.io/kyusook/egov-uengine/egov-default-backend:${{ github.ref_name }}
 
-  build-egov-default-frontend:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-      
-      - name: Login to Docker Hub
-        uses: docker/login-action@v1
-        with:
-          username: ${{ env.DOCKERHUB_USERNAME }}
-          password: ${{ env.DOCKERHUB_PASSWORD }}
-      
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v2
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      
-      - name: Build Maven Project for egov-default-frontend
-        run:
-            cd egov-default-frontend
-            npm run build
-
-      - name: Docker Build and push for egov-default-frontend
+      - name: Build and push for egov-default-frontend
+        run: |
+          cd egov-default-frontend
+          npm run build
         uses: docker/build-push-action@v4
         with:
           context: ./egov-default-frontend
@@ -198,3 +96,21 @@ jobs:
           tags: |
             ghcr.io/kyusook/egov-uengine/egov-default-frontend:latest
             ghcr.io/kyusook/egov-uengine/egov-default-frontend:${{ github.ref_name }}
+
+      - name: Set up Kubernetes
+        uses: azure/setup-kubectl@v1
+        with:
+          version: 'v1.20.0'
+
+      - name: Set up Argo Rollouts
+        run: |
+          curl -LO https://github.com/argoproj/argo-rollouts/releases/latest/download/kubectl-argo-rollouts-darwin-amd64
+          chmod +x ./kubectl-argo-rollouts-darwin-amd64
+          sudo mv ./kubectl-argo-rollouts-darwin-amd64 /usr/local/bin/kubectl-argo-rollouts
+
+      - name: Deploy to Kubernetes
+        env:
+          KUBECONFIG: ${{ secrets.KUBECONFIG }}
+        run: |
+          kubectl apply -f kubernetes/template/istio.yml
+          kubectl argo rollouts get rollout example-rollout
