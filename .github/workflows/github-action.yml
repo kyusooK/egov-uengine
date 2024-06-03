@@ -1,87 +1,85 @@
-name: github-action
-run-name: ${{ github.actor }} is out building GitHub Actions 
+name: CI to Docker Hub
 
 on:
   push:
-    # Pattern matched against refs/tags
-    tags:        
-      - '**'
+    branches: [ main ]
+
+env:
+  DOCKERHUB_USERNAME: kimkyusoo
+  DOCKERHUB_PASSWORD: Rlarbtn135!
 
 jobs:
-  docker:
+  accident-service:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
       
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-      
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v2
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
         with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          username: ${{ env.DOCKERHUB_USERNAME }}
+          password: ${{ env.DOCKERHUB_PASSWORD }}
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v2
+        with:
+          java-version: '17'
+          distribution: 'temurin'
       
-      - name: Build Maven Projects
+      - name: Build and push Order Service Docker image
         run: |
-          mvn clean package -f ./accident/pom.xml
-          mvn clean package -f ./assessment/pom.xml
-          mvn clean package -f ./compensation/pom.xml
-          mvn clean package -f ./statistics/pom.xml
-          mvn clean package -f ./notification/pom.xml
+          cd accident
+          mvn clean package -DskipTests
+          docker build . -t ${{ env.DOCKERHUB_USERNAME }}/accident:latest
+          docker push ${{ env.DOCKERHUB_USERNAME }}/accident:latest
+  
+  assessment-service:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ env.DOCKERHUB_USERNAME }}
+          password: ${{ env.DOCKERHUB_PASSWORD }}
 
-      - name: Docker Build and push for Accident
-        uses: docker/build-push-action@v4
+      - name: Set up JDK 17
+        uses: actions/setup-java@v2
         with:
-          context: ./accident
-          platforms: linux/amd64,linux/arm64
-          push: true
-          tags: |
-            ghcr.io/${{ github.repository }}/accident:latest
-            ghcr.io/${{ github.repository }}/accident:${{ github.ref_name }}
-            
-      - name: Docker Build and push for Assessment
-        uses: docker/build-push-action@v4
+          java-version: '17'
+          distribution: 'temurin'
+      
+      - name: Build and push Order Service Docker image
+        run: |
+          cd assessment
+          mvn clean package -DskipTests
+          docker build . -t ${{ env.DOCKERHUB_USERNAME }}/assessment:latest
+          docker push ${{ env.DOCKERHUB_USERNAME }}/assessment:latest
+
+  compensation-service:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
         with:
-          context: ./assessment
-          platforms: linux/amd64,linux/arm64
-          push: true
-          tags: |
-            ghcr.io/${{ github.repository }}/assessment:latest
-            ghcr.io/${{ github.repository }}/assessment:${{ github.ref_name }}
-            
-      - name: Docker Build and push for Compensation
-        uses: docker/build-push-action@v4
+          username: ${{ env.DOCKERHUB_USERNAME }}
+          password: ${{ env.DOCKERHUB_PASSWORD }}
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v2
         with:
-          context: ./compensation
-          platforms: linux/amd64,linux/arm64
-          push: true
-          tags: |
-            ghcr.io/${{ github.repository }}/compensation:latest
-            ghcr.io/${{ github.repository }}/compensation:${{ github.ref_name }}
-            
-      - name: Docker Build and push for Statistics
-        uses: docker/build-push-action@v4
-        with:
-          context: ./statistics
-          platforms: linux/amd64,linux/arm64
-          push: true
-          tags: |
-            ghcr.io/${{ github.repository }}/statistics:latest
-            ghcr.io/${{ github.repository }}/statistics:${{ github.ref_name }}
-            
-      - name: Docker Build and push for Notification
-        uses: docker/build-push-action@v4
-        with:
-          context: ./notification
-          platforms: linux/amd64,linux/arm64
-          push: true
-          tags: |
-            ghcr.io/${{ github.repository }}/notification:latest
-            ghcr.io/${{ github.repository }}/notification:${{ github.ref_name }}
-            
+          java-version: '17'
+          distribution: 'temurin'
+      
+      - name: Build and push Order Service Docker image
+        run: |
+          cd compensation
+          mvn clean package -DskipTests
+          docker build . -t ${{ env.DOCKERHUB_USERNAME }}/compensation:latest
+          docker push ${{ env.DOCKERHUB_USERNAME }}/compensation:latest
