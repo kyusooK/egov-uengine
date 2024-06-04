@@ -64,7 +64,7 @@ spec:
     spec:
       containers:
       - name: accident
-        image: "ghcr.io/kyusook/egov-uengine/accident:main"
+        image: "ghcr.io/kyusook/egov-uengine/accident:v0.6"
         ports:
         - name: http
           containerPort: 80
@@ -171,7 +171,7 @@ spec:
     spec:
       containers:
       - name: assessment
-        image: "ghcr.io/kyusook/egov-uengine/assessment:main"
+        image: "ghcr.io/kyusook/egov-uengine/assessment:v0.6"
         ports:
         - name: http
           containerPort: 80
@@ -278,7 +278,7 @@ spec:
     spec:
       containers:
       - name: compensation
-        image: "ghcr.io/kyusook/egov-uengine/compensation:main"
+        image: "ghcr.io/kyusook/egov-uengine/compensation:v0.6"
         ports:
         - name: http
           containerPort: 80
