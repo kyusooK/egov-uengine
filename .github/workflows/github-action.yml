@@ -1,36 +1,29 @@
-name: Build and Push Services
+name: github-action
+run-name: ${{ github.actor }} is out building GitHub Actions
 
-# on:
-#   push:
-#     tags:
-#       - v*
 on:
   push:
-    branches: [ main ]
-
-env:
-  REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
+    # Pattern matched against refs/tags
+    tags:        
+      - '**' 
 
 jobs:
-  build-accident:
+  docker:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v3
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
-
+      
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
       
-      - name: Log in to the Container registry
-        uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ secrets.ID }}
-          password: ${{ secrets.TOKEN }}
+      - name: Create and use multi-platform builder
+        run: |
+          docker buildx create --use --name builder --platform linux/amd64,linux/arm64
+          docker buildx inspect --bootstrap
       
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v2
@@ -39,8 +32,17 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
       
-      - name: Build Maven Project for Accident
-        run: mvn clean package -f ./accident/pom.xml
+      - name: Build Maven Projects
+        run: |
+          mvn clean package -f ./accident/pom.xml
+          mvn clean package -f ./assessment/pom.xml
+          mvn clean package -f ./compensation/pom.xml
+          mvn clean package -f ./egov-default-backend/pom.xml
+
+      - name: Set lowercase names to use in tags
+        run: |
+          echo "REPO_NAME=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+          echo "REF_NAME=$(echo ${{ github.ref_name }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
 
       - name: Docker Build and push for Accident
         uses: docker/build-push-action@v4
@@ -49,37 +51,9 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: |
-            ghcr.io/kyusook/egov-uengine/accident:${{ github.ref_name }}
-
-  build-assessment:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-      
-      - name: Log in to the Container registry
-        uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ secrets.ID }}
-          password: ${{ secrets.TOKEN }}
-      
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v2
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      
-      - name: Build Maven Project for Assessment
-        run: mvn clean package -f ./assessment/pom.xml
-
+            ghcr.io/${{ env.REPO_NAME }}/accident:latest
+            ghcr.io/${{ env.REPO_NAME }}/accident:${{ env.REF_NAME }}
+            
       - name: Docker Build and push for Assessment
         uses: docker/build-push-action@v4
         with:
@@ -87,37 +61,9 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: |
-            ghcr.io/kyusook/egov-uengine/assessment:${{ github.ref_name }}
-
-  build-compensation:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-      
-      - name: Log in to the Container registry
-        uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ secrets.ID }}
-          password: ${{ secrets.TOKEN }}
-      
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v2
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      
-      - name: Build Maven Project for Compensation
-        run: mvn clean package -f ./compensation/pom.xml
-
+            ghcr.io/${{ env.REPO_NAME }}/assessment:latest
+            ghcr.io/${{ env.REPO_NAME }}/assessment:${{ env.REF_NAME }}
+            
       - name: Docker Build and push for Compensation
         uses: docker/build-push-action@v4
         with:
@@ -125,80 +71,16 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: |
-            ghcr.io/kyusook/egov-uengine/compensation:${{ github.ref_name }}
+            ghcr.io/${{ env.REPO_NAME }}/compensation:latest
+            ghcr.io/${{ env.REPO_NAME }}/compensation:${{ env.REF_NAME }}
 
-  build-egov-default-backend:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-      
-      - name: Log in to the Container registry
-        uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ secrets.ID }}
-          password: ${{ secrets.TOKEN }} 
-      
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v2
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      
-      - name: Build Maven Project for egov-default-backend
-        run: mvn clean package -f ./egov-default-backend/pom.xml
-
-      - name: Docker Build and push for egov-default-backend
+      - name: Docker Build and push for egov-backend
         uses: docker/build-push-action@v4
         with:
           context: ./egov-default-backend
           platforms: linux/amd64,linux/arm64
           push: true
           tags: |
-            ghcr.io/kyusook/egov-uengine/egov-default-backend:${{ github.ref_name }}
-
-  # build-gateway:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v2
-
-  #     - name: Set up QEMU
-  #       uses: docker/setup-qemu-action@v2
-
-  #     - name: Set up Docker Buildx
-  #       uses: docker/setup-buildx-action@v2
-      
-  #     - name: Log in to the Container registry
-  #       uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
-  #       with:
-  #         registry: ${{ env.REGISTRY }}
-  #         username: ${{ secrets.ID }}
-  #         password: ${{ secrets.TOKEN }}
-      
-  #     - name: Login to GitHub Container Registry
-  #       uses: docker/login-action@v2
-  #       with:
-  #         registry: ghcr.io
-  #         username: ${{ github.repository_owner }}
-  #         password: ${{ secrets.GITHUB_TOKEN }}
-      
-  #     - name: Build Maven Project for gateway
-  #       run: mvn clean package -f ./gateway/pom.xml
-
-  #     - name: Docker Build and push for gateway
-  #       uses: docker/build-push-action@v4
-  #       with:
-  #         context: ./compensation
-  #         platforms: linux/amd64,linux/arm64
-  #         push: true
-  #         tags: |
-  #           ghcr.io/kyusook/egov-uengine/gateway:${{ github.ref_name }}
+            ghcr.io/${{ env.REPO_NAME }}/default-backend:latest
+            ghcr.io/${{ env.REPO_NAME }}/default-backend:${{ env.REF_NAME }}
+            
