@@ -16,6 +16,7 @@ spec:
     spec:
       containers:
         - name: accident
-          image: kimkyusoo/accident:0603
+          image: kimkyusoo/accident:0604
           ports:
             - containerPort: 8080
+          command: ["java", "-jar", "/app/app.jar"]
