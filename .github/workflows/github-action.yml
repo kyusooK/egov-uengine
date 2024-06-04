@@ -37,7 +37,6 @@ jobs:
           mvn clean package -f ./accident/pom.xml
           mvn clean package -f ./assessment/pom.xml
           mvn clean package -f ./compensation/pom.xml
-          mvn clean package -f ./egov-default-backend/pom.xml
 
       - name: Set lowercase names to use in tags
         run: |
@@ -73,14 +72,3 @@ jobs:
           tags: |
             ghcr.io/${{ env.REPO_NAME }}/compensation:latest
             ghcr.io/${{ env.REPO_NAME }}/compensation:${{ env.REF_NAME }}
-
-      - name: Docker Build and push for egov-backend
-        uses: docker/build-push-action@v4
-        with:
-          context: ./egov-default-backend
-          platforms: linux/amd64,linux/arm64
-          push: true
-          tags: |
-            ghcr.io/${{ env.REPO_NAME }}/default-backend:latest
-            ghcr.io/${{ env.REPO_NAME }}/default-backend:${{ env.REF_NAME }}
-            
