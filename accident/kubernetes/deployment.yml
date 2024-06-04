@@ -16,7 +16,6 @@ spec:
     spec:
       containers:
         - name: accident
-          image: ghcr.io/kyusook/egov-uengine/accident:v0.7
+          image: ghcr.io/kyusook/egov-uengine/accident:v0.8
           ports:
             - containerPort: 8080
-          command: ["java", "-jar", "/app/app.jar"]

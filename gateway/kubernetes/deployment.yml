@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
         - name: gateway
-          image: kimkyusoo/gateway:0603
+          image: ghcr.io/kyusook/egov-uengine/gateway:v0.8
           ports:
             - containerPort: 8080
