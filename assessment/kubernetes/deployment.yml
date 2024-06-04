@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
         - name: assessment
-          image: kimkyusoo/assessment:0603
+          image: ghcr.io/kyusook/egov-uengine/assessment:v0.7
           ports:
             - containerPort: 8080
