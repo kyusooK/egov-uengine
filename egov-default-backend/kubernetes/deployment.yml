@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
         - name: egov-default-backend
-          image: kimkyusoo/egov-default-backend:0603
+          image: kimkyusoo/egov-default-backend:0609
           ports:
             - containerPort: 8080
