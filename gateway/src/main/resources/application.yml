@@ -2,7 +2,6 @@ server:
   port: 8088
 
 ---
-
 spring:
   profiles: default
   cloud:
@@ -78,7 +77,8 @@ spring:
             - Path=/notifications/**, 
         - id: egov-default-backend
           uri: http://default-backend:8080
-          predicates:        
+          predicates:
+            - Path=/board/**, /auth/**        
         - id: frontend
           uri: http://frontend:8080
           predicates:
