@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
         - name: accident
-          image: ghcr.io/kyusook/egov-uengine/accident:v0.8
+          image: ghcr.io/kyusook/egov-uengine/accident:v0.9
           ports:
             - containerPort: 8080

@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
         - name: compensation
-          image: ghcr.io/kyusook/egov-uengine/compensation:v0.8
+          image: ghcr.io/kyusook/egov-uengine/compensation:v0.9
           ports:
             - containerPort: 8080
