@@ -98,11 +98,11 @@ jobs:
 
       - name: Update Kubernetes manifests
         run: |
-          sed -i '/name: accident/{N;s|image: ghcr.io/[^ ]*|image: ghcr.io/${{ env.REPO_NAME }}/accident:${{ env.REF_NAME }}|}' ./kubernetes/template/template.yml
-          sed -i '/name: assessment/{N;s|image: ghcr.io/[^ ]*|image: ghcr.io/${{ env.REPO_NAME }}/assessment:${{ env.REF_NAME }}|}' ./kubernetes/template/template.yml
-          sed -i '/name: compensation/{N;s|image: ghcr.io/[^ ]*|image: ghcr.io/${{ env.REPO_NAME }}/compensation:${{ env.REF_NAME }}|}' ./kubernetes/template/template.yml
-          sed -i '/name: statistics/{N;s|image: ghcr.io/[^ ]*|image: ghcr.io/${{ env.REPO_NAME }}/statistics:${{ env.REF_NAME }}|}' ./kubernetes/template/template.yml
-          sed -i '/name: notification/{N;s|image: ghcr.io/[^ ]*|image: ghcr.io/${{ env.REPO_NAME }}/notification:${{ env.REF_NAME }}|}' ./kubernetes/template/template.yml
+          sed -i '/name: "accident"/{N;s|image: "ghcr.io/[^"]*"|image: "ghcr.io/${{ env.REPO_NAME }}/accident:${{ env.REF_NAME }}"|}' ./kubernetes/template/template.yml
+          sed -i '/name: "assessment"/{N;s|image: "ghcr.io/[^"]*"|image: "ghcr.io/${{ env.REPO_NAME }}/assessment:${{ env.REF_NAME }}"|}' ./kubernetes/template/template.yml
+          sed -i '/name: "compensation"/{N;s|image: "ghcr.io/[^"]*"|image: "ghcr.io/${{ env.REPO_NAME }}/compensation:${{ env.REF_NAME }}"|}' ./kubernetes/template/template.yml
+          sed -i '/name: "statistics"/{N;s|image: "ghcr.io/[^"]*"|image: "ghcr.io/${{ env.REPO_NAME }}/statistics:${{ env.REF_NAME }}"|}' ./kubernetes/template/template.yml
+          sed -i '/name: "notification"/{N;s|image: "ghcr.io/[^"]*"|image: "ghcr.io/${{ env.REPO_NAME }}/notification:${{ env.REF_NAME }}"|}' ./kubernetes/template/template.yml
           git config --global user.email ${{ github.actor }}@users.noreply.github.com
           git config --global user.name "${{ github.actor }}"
           git add ./kubernetes/template.yml
