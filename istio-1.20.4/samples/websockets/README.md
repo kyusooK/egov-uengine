@@ -3,7 +3,7 @@
 This is a sample application that demonstrates the use of an upgraded websockets connection on an ingress traffic when using Istio `VirtualService`.
 The `app.yaml` creates a Kubernetes `Service` and a `Deployment` that is based on an existing Docker image for [Hiroakis's Tornado Websocket Example](https://github.com/hiroakis/tornado-websocket-example).
 
-__Notice:__ The addition of websockets upgrade support in v1alpha3 routing rules has only been added after the release of `Istio v0.9.0`.
+__Notice:__ The addition of websockets upgrade support in v1alpha3 routing rules has only been added after the release of `Istio v1.0.0`.
 
 ## Prerequisites
 

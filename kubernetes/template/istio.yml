@@ -17,7 +17,6 @@ spec:
 
 ---
 
-
 apiVersion: argoproj.io/v1alpha1
 kind: Rollout
 metadata:
@@ -64,7 +63,7 @@ spec:
     spec:
       containers:
       - name: accident
-        image: "ghcr.io/kyusook/egov-uengine/accident:v0.9"
+        image: "ghcr.io/kyusook/egov-uengine/accident:v1.0"
         ports:
         - name: http
           containerPort: 80
@@ -171,7 +170,7 @@ spec:
     spec:
       containers:
       - name: assessment
-        image: "ghcr.io/kyusook/egov-uengine/assessment:v0.9"
+        image: "ghcr.io/kyusook/egov-uengine/assessment:v1.0"
         ports:
         - name: http
           containerPort: 80
@@ -278,7 +277,7 @@ spec:
     spec:
       containers:
       - name: compensation
-        image: "ghcr.io/kyusook/egov-uengine/compensation:v0.9"
+        image: "ghcr.io/kyusook/egov-uengine/compensation:v1.0"
         ports:
         - name: http
           containerPort: 80
